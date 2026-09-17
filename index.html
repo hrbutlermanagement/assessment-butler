@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Candidate Assessment | PT Butler Management Property</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #FF385C;
+      --primary-hover: #E00B41;
+      --dark-text: #222222;
+      --light-text: #717171;
+      --bg-gray: #F7F7F7;
+      --border-color: #DDDDDD;
+      --white: #FFFFFF;
+      --radius: 12px;
+      --shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-gray);
+      color: var(--dark-text);
+      line-height: 1.5;
+      padding-bottom: 60px;
+    }
+
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand-container {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-container img {
+      height: 38px;
+      object-fit: contain;
+    }
+
+    .company-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--dark-text);
+      border-left: 2px solid var(--border-color);
+      padding-left: 16px;
+    }
+
+    .timer-badge {
+      display: none;
+      background: #FFF0F2;
+      color: var(--primary);
+      border: 1px solid #FFC2CC;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    p.subtitle {
+      color: var(--light-text);
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      color: var(--dark-text);
+    }
+
+    input[type="text"], input[type="tel"] {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    input[type="text"]:focus, input[type="tel"]:focus {
+      border-color: var(--dark-text);
+      box-shadow: 0 0 0 2px rgba(34,34,34,0.1);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: var(--white);
+      border: none;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .question-block {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #EBEBEB;
+    }
+
+    .question-block:last-child {
+      border-bottom: none;
+    }
+
+    .q-number {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .q-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--dark-text);
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    .options-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option-label {
+      display: flex;
+      align-items: flex-start;
+      padding: 14px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 14px;
+    }
+
+    .option-label:hover {
+      border-color: var(--dark-text);
+      background-color: #FAF2F3;
+    }
+
+    .option-label input[type="radio"] {
+      margin-top: 3px;
+      margin-right: 12px;
+      accent-color: var(--primary);
+    }
+
+    #quiz-screen, #thankyou-screen {
+      display: none;
+    }
+
+    /* Protected HR Portal Styles */
+    .hr-access-panel {
+      margin-top: 40px;
+      padding: 16px;
+      background: #F9F9F9;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px dashed #CCC;
+    }
+
+    .hr-btn {
+      background: #333333;
+      color: var(--white);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .hr-btn:hover {
+      background: #000000;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="brand-container">
+      <img src="logo.png" alt="Butler Management Logo" onerror="this.src='https://via.placeholder.com/120x38?text=Butler+Logo'">
+      <div class="company-title">PT Butler Management Property</div>
+    </div>
+    <div class="timer-badge" id="timer">Time Left: 10:00</div>
+  </header>
+
+  <div class="container">
+
+    <!-- 1. REGISTRATION SCREEN -->
+    <div id="reg-screen" class="card">
+      <h1>Candidate Assessment</h1>
+      <p class="subtitle">Please enter your candidate information to start the executive assessment. You will have exactly 10 minutes to finish 24 questions.</p>
+      
+      <form id="regForm" onsubmit="startAssessment(event)">
+        <div class="form-group">
+          <label for="fullName">Full Name</label>
+          <input type="text" id="fullName" placeholder="e.g. Alexey Ivanov" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="phone">Phone / WhatsApp Number</label>
+          <input type="tel" id="phone" placeholder="e.g. +62 812 3456 7890" required>
+        </div>
+
+        <div class="form-group">
+          <label for="position">Applied Position</label>
+          <input type="text" id="position" value="Owner Acquisition & Relations Specialist" readonly style="background:#F2F2F2; cursor:not-allowed;">
+        </div>
+
+        <button type="submit" class="btn-primary">Start Assessment</button>
+      </form>
+    </div>
+
+    <!-- 2. QUIZ SCREEN -->
+    <div id="quiz-screen">
+      <div class="card" style="margin-bottom: 16px; padding: 16px 24px;">
+        <p style="font-size: 13px; color: var(--light-text); font-weight: 600;">
+          * Read every scenario carefully. Answers must be submitted within 10 minutes.
+        </p>
+      </div>
+
+      <form id="quizForm" onsubmit="submitAssessment(event)">
+        <div class="card" id="questions-wrapper">
+          <!-- Questions Injected via JS -->
+        </div>
+        <button type="submit" class="btn-primary" style="margin-top: 10px;">Submit All Answers</button>
+      </form>
+    </div>
+
+    <!-- 3. THANK YOU SCREEN (Candidate View) -->
+    <div id="thankyou-screen" class="card" style="text-align: center; padding: 60px 32px;">
+      <div style="font-size: 48px; margin-bottom: 16px;">🎉</div>
+      <h1>Thank You for Completing the Assessment</h1>
+      <p class="subtitle" style="max-width: 500px; margin: 0 auto 30px;">
+        Your responses have been successfully recorded in our system. Our HR team will evaluate your profiling results and update you regarding the next stage of the selection process.
+      </p>
+      <div style="border-top: 1px solid var(--border-color); padding-top: 20px; font-size: 13px; color: var(--light-text);">
+        PT Butler Management Property — Canggu, Bali
+      </div>
+
+      <!-- PROTECTED HR ACCESS PANEL -->
+      <div class="hr-access-panel">
+        <p style="font-size: 11px; color: #888; font-weight: 700;">[ HR INTERNAL ONLY ]</p>
+        <button type="button" class="hr-btn" onclick="promptHRPasscode()">HR Admin Portal</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // GOOGLE APPS SCRIPT WEB APP URL
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwbofYfsGGfSqOA9DKn0sg5i1DqXfu9b42lp5mXn8pScJt-dVoummMKssXoPDgnZRkV/exec';
+    
+    // HR PASSCODE SECURITY
+    const HR_PASSCODE = "093265"; 
+
+    // 24 QUESTIONS & SCORING MATRIX
+    const questions = [
+      {
+        q: "During an unannounced field visit to a luxury leasehold villa in Canggu listed on your marketing lead sheet, the local Russian property manager refuses to share the owner’s direct contact, citing strict non-disclosure instructions. What is the most effective approach to secure an opening with the owner?",
+        a: {
+          A: { text: "Offer the property manager a referral incentive under the table if they successfully connect you directly with the owner via Telegram.", score: 0 },
+          B: { text: "Present an audited, anonymized performance case study of a neighboring villa in Canggu, highlight your firm's compliance with local tax and PMA structures, and leave a high-grade physical pitch kit addressed to the owner.", score: 3 },
+          C: { text: "Cross-reference public land registry data and social media geotags to find the owner's personal handle and message them directly, bypassing the gatekeeper.", score: 1 },
+          D: { text: "Conduct a full exterior visual inspection of the villa and send an unsolicited physical appraisal report to the villa’s public Airbnb inbox.", score: 2 }
+        }
+      },
+      {
+        q: "If a 6-bedroom luxury villa in Pererenan with fixed monthly operating overhead of $5,500 generates an Average Daily Rate (ADR) of $650 at a 75% occupancy rate in a 30-day month, what is the net return to the owner if the management company charges a 18% commission on Gross Rental Revenue and a 5% handling fee on total operating overhead?",
+        a: {
+          A: { text: "$8,875", score: 3 },
+          B: { text: "$9,150", score: 1 },
+          C: { text: "$10,525", score: 2 },
+          D: { text: "$7,900", score: 0 }
+        }
+      },
+      {
+        q: "A high-net-worth Russian investor who recently purchased a 20-year leasehold villa in Canggu demands a contractual 12% guaranteed annual yield based on his total acquisition capital. How should you address this objection during the initial acquisition meeting?",
+        a: {
+          A: { text: "Agree to the 12% guaranteed yield for the first 6 months only, provided the management commission is raised to 25% thereafter.", score: 0 },
+          B: { text: "Reject the demand outright and explain that market volatility in Bali strictly prohibits any form of guaranteed returns under company policy.", score: 1 },
+          C: { text: "Deconstruct his acquisition capital against localized market seasonality data, presenting a dynamic Net Yield model showing realistic occupancy spikes and ADR fluctuations while emphasizing asset preservation.", score: 3 },
+          D: { text: "Propose a hybrid model offering a lower guaranteed baseline yield of 6% backed by a performance-based profit share above a set revenue threshold.", score: 2 }
+        }
+      },
+      {
+        q: "Portfolio Alpha consists of Villas V, W, X, Y, and Z.<br>- Villa V generates higher net yield than Villa W, but lower than Villa X.<br>- Villa Y generates higher net yield than Villa X, but only when occupancy exceeds 80%; otherwise, its yield is equal to Villa W.<br>- Villa Z consistently generates less than Villa W but more than a fixed market benchmark $B$.<br>If current market occupancy across Canggu drops to 70%, which sequence correctly orders the villas from <b>highest to lowest net yield</b>?",
+        a: {
+          A: { text: "Y – X – V – W – Z", score: 1 },
+          B: { text: "X – V – W – Y – Z", score: 2 },
+          C: { text: "X – V – Y – W – Z", score: 3 },
+          D: { text: "X – Y – V – W – Z", score: 0 }
+        }
+      },
+      {
+        q: "When following up with a skeptical Eastern European prospect who is deciding between managing their villa independently or onboarding with Butler Management, what is the most strategically sound follow-up sequence via Telegram?",
+        a: {
+          A: { text: "Send a daily automated performance metric update of top-performing Canggu properties to maintain top-of-mind awareness.", score: 1 },
+          B: { text: "Schedule an immediate voice call without prior notice to convey urgency and high-touch executive service.", score: 0 },
+          C: { text: "Transmit a concise executive summary comparing their self-management operational risks (tax liability, staff turnover) against a clear 90-day onboarding timeline and projected net margin uplift.", score: 3 },
+          D: { text: "Send a personalized formal invitation to lunch at a high-end Canggu venue to build personal rapport before discussing numbers.", score: 2 }
+        }
+      },
+      {
+        q: "Consider the statement: <i>'Every compliant PMA-owned villa in Canggu utilizes professional property management. Some luxury properties in Canggu are compliant PMA-owned villas. All luxury properties in Canggu require local banjar approval.'</i><br>Which conclusion is <b>logically sound and indisputable</b> based strictly on the premises provided?",
+        a: {
+          A: { text: "All properties requiring local banjar approval utilize professional property management.", score: 0 },
+          B: { text: "Some luxury properties in Canggu utilize professional property management.", score: 3 },
+          C: { text: "Any villa using professional property management must be a compliant PMA-owned villa.", score: 1 },
+          D: { text: "Some properties requiring local banjar approval do not utilize professional property management.", score: 2 }
+        }
+      },
+      {
+        q: "While conducting field canvassing in Batu Bolong, you identify an unlisted, newly finished 4-bedroom villa with high rental potential that is not on the leads list provided by the Marketing Manager. What is your immediate course of action?",
+        a: {
+          A: { text: "Immediately approach the site manager, gather asset specs and owner origin details, log it as an organic lead in the CRM, and initiate contact within 24 hours.", score: 3 },
+          B: { text: "Pause your field route and call the Marketing Manager to verify if the property is already bound by an exclusive NDA with another agency.", score: 1 },
+          C: { text: "Photograph the property exterior, note the GPS coordinates, and forward it to the marketing team to run a digital background search before visiting again.", score: 2 },
+          D: { text: "Wait outside the property until the owner arrives to ensure a direct face-to-face pitch before competitors spot the site.", score: 0 }
+        }
+      },
+      {
+        q: "Complete the logical numerical sequence representing portfolio yield escalation:<br><b>3, &nbsp; 8, &nbsp; 23, &nbsp; 68, &nbsp; 203, &nbsp; ...</b><br>What is the next value in the series?",
+        a: {
+          A: { text: "608", score: 3 },
+          B: { text: "609", score: 1 },
+          C: { text: "406", score: 0 },
+          D: { text: "611", score: 2 }
+        }
+      },
+      {
+        q: "An existing Russian owner calls angrily, claiming that neighboring villas managed by another company are listed at a 20% lower ADR on OTA channels, accusing your team of mismanaging pricing and causing vacancies. How do you de-escalate and address this effectively?",
+        a: {
+          A: { text: "Immediately lower the villa's ADR by 20% on all channels to match the competitor and restore occupancy.", score: 0 },
+          B: { text: "Offer a temporary reduction in management commission fees to offset the owner's perceived loss of revenue.", score: 1 },
+          C: { text: "Reassure the owner verbally that higher pricing reflects luxury positioning and promise that bookings will increase during the upcoming peak season.", score: 2 },
+          D: { text: "Provide a real-time market data report analyzing length-of-stay, net revPAR (Revenue Per Available Room), and conversion rates to demonstrate that discounting ADR degrades brand positioning and net margin.", score: 3 }
+        }
+      },
+      {
+        q: "A property management acquisition team of 4 specialists can conduct quality field audits and initial contact for 32 target villas in 6 days. Assuming equal efficiency, how many specialists are required to cover 60 target villas in 5 days?",
+        a: {
+          A: { text: "8 specialists", score: 2 },
+          B: { text: "9 specialists", score: 3 },
+          C: { text: "10 specialists", score: 1 },
+          D: { text: "7 specialists", score: 0 }
+        }
+      },
+      {
+        q: "During the monthly audit of a Russian owner's property statement, you discover a $1,200 unplanned repair expense incurred for pool filtration failure during a guest stay. The owner is known for questioning every line item. What is the optimal communication protocol?",
+        a: {
+          A: { text: "Include the invoice silently in the monthly statement breakdown and address it only if the owner raises a question.", score: 0 },
+          B: { text: "Group the repair charge under general 'Property Maintenance & Upkeep' to streamline the financial statement presentation.", score: 1 },
+          C: { text: "Issue a proactive preemptive notice prior to statement delivery, accompanied by photo/video proof, vendor quotes, emergency action taken, and preventative maintenance strategies implemented.", score: 3 },
+          D: { text: "Absorb 50% of the maintenance cost into the company’s operational buffer to prevent a confrontation with the owner.", score: 2 }
+        }
+      },
+      {
+        q: "Examine the conditional statements regarding portfolio acquisition:<br>- <i>If regulatory tax compliance is strictly enforced, then non-compliant operators exit the market.</i><br>- <i>If non-compliant operators exit the market, demand for professional management companies increases OR market lease rates drop significantly.</i><br>- <i>If market lease rates drop significantly, foreign investor acquisitions stall.</i><br>- <i>Fact: Foreign investor acquisitions have NOT stalled, and demand for professional management companies has NOT increased.</i><br>Which deduction is <b>logically guaranteed</b> to be true?",
+        a: {
+          A: { text: "Non-compliant operators have exited the market.", score: 1 },
+          B: { text: "Regulatory tax compliance was strictly enforced.", score: 0 },
+          C: { text: "Regulatory tax compliance was NOT strictly enforced.", score: 3 },
+          D: { text: "Market lease rates dropped significantly without affecting demand.", score: 2 }
+        }
+      },
+      {
+        q: "Which legal and structural verification is most critical for an Acquisition Specialist to validate prior to signing a management agreement for a foreigner-owned leasehold villa in Bali?",
+        a: {
+          A: { text: "The owner’s personal tourist visa or ITAS validity period.", score: 1 },
+          B: { text: "The underlying land title authenticity (Hak Milik status), notary leasehold agreement continuity, tax compliance (PBB), and operational zoning for commercial rental.", score: 3 },
+          C: { text: "The existence of an active local bank account registered under the foreign owner's personal name.", score: 0 },
+          D: { text: "The active comprehensive property damage and third-party liability insurance policy.", score: 2 }
+        }
+      },
+      {
+        q: "An owner states: <i>'My villa achieved 90% occupancy when I managed it myself last year, so paying a property management company a percentage of my revenue makes no financial sense.'</i><br>Which option identifies the <b>flaw in the owner's underlying logic</b> while offering the sharpest counter-position?",
+        a: {
+          A: { text: "Assuming that self-management has zero cost, ignoring the hidden costs of personal labor time, guest handling stress, and vendor overhead.", score: 2 },
+          B: { text: "Equating high occupancy directly with maximum net profitability, while ignoring optimal ADR yield strategy, channel distribution costs, and operational scaling.", score: 3 },
+          C: { text: "Failing to realize that guest reviews degrade quickly over time without professional staff maintenance.", score: 1 },
+          D: { text: "Overestimating the stability of tourist arrivals in Canggu over a multi-year horizon.", score: 0 }
+        }
+      },
+      {
+        q: "What is the fundamental ethical boundary for an Acquisition Specialist during mobile canvassing and direct negotiations with prospective villa owners?",
+        a: {
+          A: { text: "Refraining from disclosing competitor pricing structures to prospective clients.", score: 1 },
+          B: { text: "Never making binding verbal commitments regarding guaranteed rental income, occupancy rates, or legal exemptions before formal corporate appraisal and legal clearance.", score: 3 },
+          C: { text: "Declining to meet clients outside of standard corporate office hours.", score: 0 },
+          D: { text: "Refusing to discuss local regulatory challenges with foreign property owners.", score: 2 }
+        }
+      },
+      {
+        q: "Three villas in Canggu generate the following monthly figures:<br>- Villa 1: Gross Revenue $15,000 | Mgmt Fee 15% | Maintenance Expense Rate 10%<br>- Villa 2: Gross Revenue $22,000 | Mgmt Fee 12% | Maintenance Expense Rate 5%<br>- Villa 3: Gross Revenue $30,000 | Mgmt Fee 10% | Maintenance Expense Rate 8%<br>If Butler Management collects its percentage fee strictly on Gross Revenue, but absorbs 20% of maintenance expense rates as internal quality oversight cost on Villa 3 only, which property yields the <b>highest net revenue to Butler Management</b>?",
+        a: {
+          A: { text: "Villa 1", score: 1 },
+          B: { text: "Villa 2", score: 2 },
+          C: { text: "Villa 3", score: 3 },
+          D: { text: "Villa 1 and Villa 2 yield equal net revenue.", score: 0 }
+        }
+      },
+      {
+        q: "When negotiating terms with a direct, task-oriented Russian investor who exhibits high skepticism toward local operational standards, which communication strategy yields the highest conversion rate?",
+        a: {
+          A: { text: "Soft, relationship-first conversations focusing on Bali lifestyle, personal background, and long-term friendship building.", score: 0 },
+          B: { text: "Highly structured, data-dense presentations using direct language, precise contract clauses, clear risk-mitigation frameworks, and immediate execution timelines.", score: 3 },
+          C: { text: "Emphasizing flexible, informal verbal agreements that allow for custom arrangements outside the standard contract.", score: 1 },
+          D: { text: "Deferring to the owner's demands during initial meetings to secure contract signatures before renegotiating terms later.", score: 2 }
+        }
+      },
+      {
+        q: "You are analyzing a portfolio of 120 leads in Canggu across three zones:<br>- Zone A (Berawa): 50 leads | Expected conversion rate: 10% | Avg contract value: $3,000/yr<br>- Zone B (Batu Bolong): 40 leads | Expected conversion rate: 15% | Avg contract value: $2,500/yr<br>- Zone C (Pererenan): 30 leads | Expected conversion rate: 20% | Avg contract value: $4,000/yr<br>Which zone offers the <b>highest total expected financial value</b> to the company?",
+        a: {
+          A: { text: "Zone A", score: 2 },
+          B: { text: "Zone B", score: 1 },
+          C: { text: "Zone C", score: 3 },
+          D: { text: "Zone A and Zone C are equal", score: 0 }
+        }
+      },
+      {
+        q: "Which combination of metrics serves as the ultimate balanced scorecard for evaluating the 6-month performance of an Owner Acquisition & Relations Specialist?",
+        a: {
+          A: { text: "Total mobile field visits conducted + total Telegram messages sent.", score: 0 },
+          B: { text: "Net new signed villa units + portfolio revenue growth + owner retention rate (churn rate) + lead-to-close conversion speed.", score: 3 },
+          C: { text: "Total gross rental revenue generated across all managed properties in Canggu.", score: 1 },
+          D: { text: "Average Daily Rate (ADR) increases across existing portfolio villas.", score: 2 }
+        }
+      },
+      {
+        q: "An Acquisition Specialist has 8 hours to execute field visits across 4 spread-out locations in Canggu under severe traffic constraints:<br>- Location 1 (Berawa): Requires 2 hours | Must be completed before 11:00 AM (Owner leaving town)<br>- Location 2 (Pererenan): Requires 2 hours | Available only after 2:30 PM<br>- Location 3 (Batu Bolong): Requires 1.5 hours | High traffic bottleneck between 12:00 PM and 2:00 PM<br>- Location 4 (Umalas): Requires 1 hour | Flexible timing<br>Assuming travel time between adjacent zones is 30 minutes, what is the most time-efficient route starting at 9:00 AM?",
+        a: {
+          A: { text: "Location 1 -> Location 4 -> Location 3 -> Location 2", score: 3 },
+          B: { text: "Location 1 -> Location 3 -> Location 4 -> Location 2", score: 2 },
+          C: { text: "Location 4 -> Location 1 -> Location 3 -> Location 2", score: 0 },
+          D: { text: "Location 1 -> Location 2 -> Location 3 -> Location 4", score: 1 }
+        }
+      },
+      {
+        q: "What is the most critical operational protocol during the physical 'Onboarding Handover' of a newly acquired luxury villa from its owner to Butler Management?",
+        a: {
+          A: { text: "Immediate replacement of all existing villa operational staff with internal company employees.", score: 1 },
+          B: { text: "Conducting a comprehensive joint asset condition audit, inventory cataloging, system operational testing, and signing a formal photographic Baseline Asset Condition Report.", score: 3 },
+          C: { text: "Immediate shut-down of all active OTA listings to reset the property's digital profile.", score: 0 },
+          D: { text: "Re-negotiating supplier contracts with local waste, pool, and garden maintenance vendors.", score: 2 }
+        }
+      },
+      {
+        q: "A marketing experiment shows that out of 200 prospective villa owners contacted:<br>- 50% are Russian, 30% are Western European, and 20% are Domestic Investors.<br>- Acquisition conversion probability is 0.10 for Russian prospects, 0.20 for Western Europeans, and 0.25 for Domestic Investors.<br>If you randomly select a successfully converted client from this experiment, what is the probability that this client is a <b>Russian owner</b>?",
+        a: {
+          A: { text: "31.25%", score: 3 },
+          B: { text: "50.00%", score: 1 },
+          C: { text: "25.00%", score: 2 },
+          D: { text: "10.00%", score: 0 }
+        }
+      },
+      {
+        q: "During an acquisition meeting, an owner reveals that a former marketing representative from your company previously promised off-the-record tax exemption handling if they signed a management contract. How should you navigate this breach of protocol?",
+        a: {
+          A: { text: "Honor the former representative’s promise verbally to secure the contract, then handle tax details later.", score: 0 },
+          B: { text: "Blame the former representative directly for misconduct and terminate the meeting immediately.", score: 1 },
+          C: { text: "Clarify company ethics and legal compliance boundaries firmly yet professionally, pivot the value proposition to legitimate tax-efficient PMA management structures, and log the incident internally.", score: 3 },
+          D: { text: "Offer a reduced management commission fee to compensate for the misunderstanding without correcting the tax claim.", score: 2 }
+        }
+      },
+      {
+        q: "You are faced with two strategic acquisition choices at the end of the quarter:<br>- Option X: Pursue a single high-profile developer owning a 6-villa complex in Canggu. Closing probability: 25%. Projected annual corporate revenue if closed: $60,000.<br>- Option Y: Pursue three independent standalone villa owners. Closing probability: 60% per villa. Projected annual corporate revenue per villa if closed: $12,000.<br>From a pure expected value (EV) and risk-diversification standpoint, how should you allocate your limited remaining time?",
+        a: {
+          A: { text: "Allocate 100% of time to Option X because the total upside ($60,000) is far higher than Option Y’s maximum ($36,000).", score: 1 },
+          B: { text: "Allocate primary effort to Option Y to secure higher probabilistic revenue ($21,600 EV) and diversify contract failure risk, while maintaining secondary contact on Option X ($15,000 EV).", score: 3 },
+          C: { text: "Split time exactly 50/50 between both options regardless of closing probabilities.", score: 2 },
+          D: { text: "Abandon both options and seek new leads with a 100% guaranteed closing rate.", score: 0 }
+        }
+      }
+    ];
+
+    let candidateData = {};
+    let timerInterval = null;
+    let secondsLeft = 600;
+
+    function startAssessment(e) {
+      e.preventDefault();
+      candidateData.name = document.getElementById('fullName').value;
+      candidateData.phone = document.getElementById('phone').value;
+      candidateData.position = document.getElementById('position').value;
+
+      document.getElementById('reg-screen').style.display = 'none';
+      document.getElementById('quiz-screen').style.display = 'block';
+      document.getElementById('timer').style.display = 'block';
+
+      renderQuestions();
+      startTimer();
+      window.scrollTo(0,0);
+    }
+
+    function renderQuestions() {
+      const wrapper = document.getElementById('questions-wrapper');
+      wrapper.innerHTML = '';
+
+      questions.forEach((qItem, idx) => {
+        const qNum = idx + 1;
+        const qHtml = `
+          <div class="question-block">
+            <div class="q-number">Question ${qNum} of 24</div>
+            <div class="q-text">${qItem.q}</div>
+            <div class="options-group">
+              ${Object.keys(qItem.a).map(opt => `
+                <label class="option-label">
+                  <input type="radio" name="q_${idx}" value="${opt}" required>
+                  <span><b>${opt}.</b> ${qItem.a[opt].text}</span>
+                </label>
+              `).join('')}
+            </div>
+          </div>
+        `;
+        wrapper.innerHTML += qHtml;
+      });
+    }
+
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        secondsLeft--;
+        let m = Math.floor(secondsLeft / 60);
+        let s = secondsLeft % 60;
+        document.getElementById('timer').innerText = `Time Left: ${m < 10 ? '0':''}${m}:${s < 10 ? '0':''}${s}`;
+
+        if (secondsLeft <= 0) {
+          clearInterval(timerInterval);
+          alert('Time is up! Your answers will be submitted automatically.');
+          submitAssessment();
+        }
+      }, 1000);
+    }
+
+    function submitAssessment(e) {
+      if(e) e.preventDefault();
+      clearInterval(timerInterval);
+
+      let totalEarnedScore = 0;
+      const maxPossibleScore = 24 * 3;
+      let detailedAnswers = [];
+
+      questions.forEach((qItem, idx) => {
+        const selected = document.querySelector(`input[name="q_${idx}"]:checked`);
+        let selectedOpt = selected ? selected.value : null;
+        let scoreEarned = selectedOpt ? qItem.a[selectedOpt].score : 0;
+        totalEarnedScore += scoreEarned;
+
+        detailedAnswers.push({
+          qNum: idx + 1,
+          selected: selectedOpt,
+          score: scoreEarned
+        });
+      });
+
+      let scorePercentage = Math.round((totalEarnedScore / maxPossibleScore) * 100);
+      let passed = scorePercentage >= 75;
+
+      let profileSummary = "";
+      if (scorePercentage >= 85) profileSummary = "EXCEPTIONAL FIT";
+      else if (scorePercentage >= 75) profileSummary = "COMPETENT / POTENTIAL FIT";
+      else if (scorePercentage >= 60) profileSummary = "BELOW EXPECTATIONS";
+      else profileSummary = "HIGH RISK / UNFIT";
+
+      let secondsUsed = 600 - secondsLeft;
+      let durationStr = Math.floor(secondsUsed / 60) + "m " + (secondsUsed % 60) + "s";
+
+      candidateData.score = totalEarnedScore;
+      candidateData.maxScore = maxPossibleScore;
+      candidateData.percentage = scorePercentage;
+      candidateData.passed = passed;
+      candidateData.answers = detailedAnswers;
+      candidateData.timestamp = new Date().toLocaleString('id-ID');
+      candidateData.profileSummary = profileSummary;
+      candidateData.duration = durationStr;
+
+      // 1. Save locally for HR view
+      localStorage.setItem('last_candidate_eval', JSON.stringify(candidateData));
+
+      // 2. Transmit silently to Google Sheets
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(candidateData)
+      }).catch(err => console.error("Database sync error:", err));
+
+      // 3. Show Thank You Screen
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('timer').style.display = 'none';
+      document.getElementById('thankyou-screen').style.display = 'block';
+      window.scrollTo(0,0);
+    }
+
+    // HR SECURITY PASSCODE CHECK
+    function promptHRPasscode() {
+      const inputCode = prompt("Enter HR Admin Passcode to view candidate metrics:");
+      if (inputCode === HR_PASSCODE) {
+        openHRReport();
+      } else if (inputCode !== null) {
+        alert("Incorrect Passcode. Access Denied.");
+      }
+    }
+
+    // HR REPORT & PDF GENERATOR
+    function openHRReport() {
+      const stored = localStorage.getItem('last_candidate_eval');
+      if (!stored) {
+        alert('No candidate evaluation data found on this browser session.');
+        return;
+      }
+
+      const evalData = JSON.parse(stored);
+      
+      let profileDetail = "";
+      if (evalData.percentage >= 85) {
+        profileDetail = "<b>EXCEPTIONAL FIT:</b> Candidate demonstrates elite cognitive acuity, high negotiation agility, and sophisticated grasp of foreigner villa management dynamics in Canggu. Highly capable of handling direct Russian investors with assertive, data-driven leadership.";
+      } else if (evalData.percentage >= 75) {
+        profileDetail = "<b>COMPETENT / POTENTIAL FIT:</b> Candidate meets standard corporate thresholds for the hybrid Acquisition role. Solid tactical comprehension with acceptable risk-handling capabilities. Recommended for secondary interview.";
+      } else if (evalData.percentage >= 60) {
+        profileDetail = "<b>BELOW EXPECTATIONS:</b> Shows baseline operational awareness but exhibits strategic gaps in high-stakes negotiation, yield analysis, or logical problem solving under time constraints.";
+      } else {
+        profileDetail = "<b>HIGH RISK / UNFIT:</b> Significant deficiency in both logical deduction (GMA) and real-world villa management technical protocols. Not recommended for mobile acquisition responsibilities.";
+      }
+
+      const reportHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>HR Evaluation Report - ${evalData.name}</title>
+          <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+          <style>
+            body { font-family: 'Plus Jakarta Sans', sans-serif; padding: 40px; background: #f4f4f6; color: #222; }
+            .card { background: #fff; padding: 32px; border-radius: 12px; border: 1px solid #ddd; max-width: 800px; margin: 0 auto; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+            h1 { font-size: 22px; margin-bottom: 4px; }
+            .badge { display: inline-block; padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 12px; text-transform: uppercase; }
+            .pass { background: #D4EDDA; color: #155724; }
+            .fail { background: #F8D7DA; color: #721C24; }
+            .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0; }
+            .box { background: #F8F9FA; padding: 16px; border-radius: 8px; border: 1px solid #E9ECEF; }
+            .val { font-size: 28px; font-weight: 800; }
+            .lbl { font-size: 11px; font-weight: 700; color: #6C757D; text-transform: uppercase; }
+            table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; }
+            th, td { border: 1px solid #DEE2E6; padding: 8px 12px; text-align: left; }
+            th { background: #F1F3F5; }
+            .print-btn { background: #222; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 700; cursor: pointer; float: right; margin-bottom: 20px; }
+            @media print {
+              .print-btn { display: none; }
+              body { background: #fff; padding: 0; }
+              .card { border: none; box-shadow: none; width: 100%; max-width: 100%; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="card">
+            <button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+            <div style="clear: both;"></div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid #eee; padding-bottom:16px;">
+              <div>
+                <h1>${evalData.name}</h1>
+                <p style="color:#666; font-size:13px;">Position: ${evalData.position} | Phone: ${evalData.phone}</p>
+              </div>
+              <div>
+                <span class="badge ${evalData.passed ? 'pass':'fail'}">
+                  ${evalData.passed ? 'QUALIFIED (≥75%)' : 'DID NOT MEET EXPECTATIONS (<75%)'}
+                </span>
+              </div>
+            </div>
+
+            <div class="grid">
+              <div class="box">
+                <div class="lbl">Final Score</div>
+                <div class="val" style="color: ${evalData.passed ? '#28A745':'#DC3545'};">${evalData.percentage}%</div>
+                <div style="font-size:12px; color:#666; margin-top:4px;">${evalData.score} / ${evalData.maxScore} Points</div>
+              </div>
+              <div class="box">
+                <div class="lbl">Time Taken</div>
+                <div class="val">${evalData.duration}</div>
+                <div style="font-size:12px; color:#666; margin-top:4px;">Out of 10:00 Max</div>
+              </div>
+              <div class="box">
+                <div class="lbl">Profiling Status</div>
+                <div class="val" style="font-size: 16px; margin-top: 8px;">${evalData.profileSummary}</div>
+              </div>
+            </div>
+
+            <h3 style="font-size:15px;">Psychological & Executive Capability Analysis</h3>
+            <div style="background:#F0F4F8; padding:16px; border-radius:8px; border-left:4px solid #0056B3; margin: 12px 0 24px; font-size:13px; line-height:1.6;">
+              ${profileDetail}
+            </div>
+
+            <h3 style="font-size:15px;">Item-Level Performance Breakdown</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Q#</th>
+                  <th>Choice</th>
+                  <th>Points (Max 3)</th>
+                  <th>Evaluation Tier</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${evalData.answers.map(ans => `
+                  <tr>
+                    <td><b>Q${ans.qNum}</b></td>
+                    <td>Option ${ans.selected || 'None'}</td>
+                    <td><b>${ans.score}</b></td>
+                    <td>${ans.score === 3 ? '🟢 Optimal' : ans.score === 2 ? '🟡 Acceptable' : ans.score === 1 ? '🟠 Suboptimal' : '🔴 Incorrect'}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+
+            <div style="margin-top:30px; text-align:right; font-size:11px; color:#888; border-top: 1px solid #eee; padding-top: 12px;">
+              Generated on: ${evalData.timestamp} | PT Butler Management Property Internal Assessment System
+            </div>
+          </div>
+        </body>
+        </html>
+      `;
+
+      const reportWindow = window.open('', '_blank');
+      reportWindow.document.write(reportHtml);
+      reportWindow.document.close();
+    }
+  </script>
+</body>
+</html>
