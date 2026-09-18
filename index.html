@@ -19,7 +19,6 @@
       --border-color: #DDDDDD;
       --white: #FFFFFF;
       --radius: 12px;
-      --shadow: 0 6px 16px rgba(0,0,0,0.12);
     }
 
     * {
@@ -34,6 +33,14 @@
       color: var(--dark-text);
       line-height: 1.5;
       padding-bottom: 60px;
+    }
+
+    /* Anti-Select khusus area kuis */
+    .quiz-protected {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
     }
 
     header {
@@ -67,6 +74,12 @@
       padding-left: 16px;
     }
 
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
     .timer-badge {
       display: none;
       background: #FFF0F2;
@@ -76,6 +89,58 @@
       border-radius: 20px;
       font-weight: 700;
       font-size: 14px;
+    }
+
+    /* Live Proctoring Camera Box */
+    .proctor-camera-box {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 160px;
+      height: 120px;
+      background: #000;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid var(--primary);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      z-index: 9999;
+    }
+
+    .proctor-camera-box video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+    }
+
+    .proctor-status {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      background: rgba(255, 56, 92, 0.85);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .proctor-dot {
+      width: 6px;
+      height: 6px;
+      background: #fff;
+      border-radius: 50%;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
     }
 
     .container {
@@ -127,12 +192,6 @@
       border-radius: 8px;
       font-size: 15px;
       outline: none;
-      transition: all 0.2s ease;
-    }
-
-    input[type="text"]:focus, input[type="tel"]:focus {
-      border-color: var(--dark-text);
-      box-shadow: 0 0 0 2px rgba(34,34,34,0.1);
     }
 
     .btn-primary {
@@ -145,7 +204,6 @@
       font-weight: 700;
       cursor: pointer;
       width: 100%;
-      transition: background 0.2s ease;
     }
 
     .btn-primary:hover {
@@ -156,10 +214,6 @@
       margin-bottom: 32px;
       padding-bottom: 24px;
       border-bottom: 1px solid #EBEBEB;
-    }
-
-    .question-block:last-child {
-      border-bottom: none;
     }
 
     .q-number {
@@ -192,13 +246,7 @@
       border: 1px solid var(--border-color);
       border-radius: 8px;
       cursor: pointer;
-      transition: all 0.2s ease;
       font-size: 14px;
-    }
-
-    .option-label:hover {
-      border-color: var(--dark-text);
-      background-color: #FAF2F3;
     }
 
     .option-label input[type="radio"] {
@@ -211,7 +259,6 @@
       display: none;
     }
 
-    /* Protected HR Portal Styles */
     .hr-access-panel {
       margin-top: 40px;
       padding: 16px;
@@ -232,10 +279,6 @@
       cursor: pointer;
       margin-top: 8px;
     }
-
-    .hr-btn:hover {
-      background: #000000;
-    }
   </style>
 </head>
 <body>
@@ -246,12 +289,22 @@
       <img src="logo.png" alt="Butler Management Logo" onerror="this.src='https://via.placeholder.com/120x38?text=Butler+Logo'">
       <div class="company-title">PT Butler Management Property</div>
     </div>
-    <div class="timer-badge" id="timer">Time Left: 10:00</div>
+    <div class="header-right">
+      <div class="timer-badge" id="timer">Time Left: 10:00</div>
+    </div>
   </header>
+
+  <!-- LIVE CAMERA PROCTORING -->
+  <div class="proctor-camera-box" id="cameraBox">
+    <div class="proctor-status">
+      <div class="proctor-dot"></div> LIVE • MONITORED
+    </div>
+    <video id="webcam" autoplay playsinline muted></video>
+  </div>
 
   <div class="container">
 
-    <!-- 1. REGISTRATION SCREEN -->
+    <!-- 1. REGISTRATION SCREEN (Anti-cheat TIDAK AKTIF di sini) -->
     <div id="reg-screen" class="card">
       <h1>Candidate Assessment</h1>
       <p class="subtitle">Please enter your candidate information to start the executive assessment. You will have exactly 10 minutes to finish 24 questions.</p>
@@ -276,11 +329,12 @@
       </form>
     </div>
 
-    <!-- 2. QUIZ SCREEN -->
+    <!-- 2. QUIZ SCREEN (Anti-cheat FULL AKTIF di sini) -->
     <div id="quiz-screen">
       <div class="card" style="margin-bottom: 16px; padding: 16px 24px;">
         <p style="font-size: 13px; color: var(--light-text); font-weight: 600;">
-          * Read every scenario carefully. Answers must be submitted within 10 minutes.
+          * Read every scenario carefully. Answers must be submitted within 10 minutes.<br>
+          <strong style="color: var(--primary);">⚠️ WARNING: Leaving the tab or trying to copy text will instantly terminate your assessment.</strong>
         </p>
       </div>
 
@@ -292,7 +346,7 @@
       </form>
     </div>
 
-    <!-- 3. THANK YOU SCREEN (Candidate View) -->
+    <!-- 3. THANK YOU SCREEN -->
     <div id="thankyou-screen" class="card" style="text-align: center; padding: 60px 32px;">
       <div style="font-size: 48px; margin-bottom: 16px;">🎉</div>
       <h1>Thank You for Completing the Assessment</h1>
@@ -303,7 +357,7 @@
         PT Butler Management Property — Canggu, Bali
       </div>
 
-      <!-- PROTECTED HR ACCESS PANEL -->
+      <!-- HR ADMIN PORTAL -->
       <div class="hr-access-panel">
         <p style="font-size: 11px; color: #888; font-weight: 700;">[ HR INTERNAL ONLY ]</p>
         <button type="button" class="hr-btn" onclick="promptHRPasscode()">HR Admin Portal</button>
@@ -313,13 +367,9 @@
   </div>
 
   <script>
-    // GOOGLE APPS SCRIPT WEB APP URL
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwbofYfsGGfSqOA9DKn0sg5i1DqXfu9b42lp5mXn8pScJt-dVoummMKssXoPDgnZRkV/exec';
-    
-    // HR PASSCODE SECURITY
     const HR_PASSCODE = "093265"; 
 
-    // 24 QUESTIONS & SCORING MATRIX
     const questions = [
       {
         q: "During an unannounced field visit to a luxury leasehold villa in Canggu listed on your marketing lead sheet, the local Russian property manager refuses to share the owner’s direct contact, citing strict non-disclosure instructions. What is the most effective approach to secure an opening with the owner?",
@@ -542,6 +592,28 @@
     let candidateData = {};
     let timerInterval = null;
     let secondsLeft = 600;
+    let isTestRunning = false;
+    let isTerminating = false;
+
+    function initCamera() {
+      const cameraBox = document.getElementById('cameraBox');
+      const video = document.getElementById('webcam');
+      cameraBox.style.display = 'block';
+
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+          .then(stream => { video.srcObject = stream; })
+          .catch(err => console.warn("Camera unavailable:", err));
+      }
+    }
+
+    function stopCamera() {
+      const video = document.getElementById('webcam');
+      if (video.srcObject) {
+        video.srcObject.getTracks().forEach(track => track.stop());
+      }
+      document.getElementById('cameraBox').style.display = 'none';
+    }
 
     function startAssessment(e) {
       e.preventDefault();
@@ -551,10 +623,16 @@
 
       document.getElementById('reg-screen').style.display = 'none';
       document.getElementById('quiz-screen').style.display = 'block';
+      document.getElementById('quiz-screen').classList.add('quiz-protected');
       document.getElementById('timer').style.display = 'block';
 
       renderQuestions();
       startTimer();
+      initCamera();
+      
+      // BARU DIAKTIFKAN SETELAH TOMBOL CLICKED
+      isTestRunning = true;
+      activateSecurity();
       window.scrollTo(0,0);
     }
 
@@ -572,7 +650,7 @@
               ${Object.keys(qItem.a).map(opt => `
                 <label class="option-label">
                   <input type="radio" name="q_${idx}" value="${opt}" required>
-                  <span><b>${opt}.</b> ${qItem.a[opt].text}</span>
+                  <span><b>${opt}.</b>${qItem.a[opt].text}</span>
                 </label>
               `).join('')}
             </div>
@@ -591,15 +669,69 @@
 
         if (secondsLeft <= 0) {
           clearInterval(timerInterval);
-          alert('Time is up! Your answers will be submitted automatically.');
+          alert('Time is up! Submitting answers automatically.');
           submitAssessment();
         }
       }, 1000);
     }
 
-    function submitAssessment(e) {
-      if(e) e.preventDefault();
+    // SYSTEM ANTI CHEATING (HANYA AKTIF SAAT KUIS)
+    function triggerViolation(reason) {
+      if (!isTestRunning || isTerminating) return;
+      isTerminating = true;
+
+      alert(`SECURITY VIOLATION DETECTED!\n\nReason: ${reason}\n\nYour assessment has been automatically terminated and submitted.`);
+      submitAssessment(null, true);
+    }
+
+    function activateSecurity() {
+      // 1. Blokir Klik Kanan
+      document.addEventListener('contextmenu', e => {
+        if (isTestRunning) e.preventDefault();
+      });
+
+      // 2. Blokir Copy/Cut
+      document.addEventListener('copy', e => {
+        if (isTestRunning) {
+          e.preventDefault();
+          triggerViolation('Attempted to copy assessment text.');
+        }
+      });
+      document.addEventListener('cut', e => {
+        if (isTestRunning) {
+          e.preventDefault();
+          triggerViolation('Attempted to cut assessment text.');
+        }
+      });
+
+      // 3. Blokir Shortcuts (F12, Ctrl+Shift+I, Ctrl+C, dll)
+      document.addEventListener('keydown', e => {
+        if (!isTestRunning) return;
+        if (
+          e.keyCode === 123 || 
+          (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) || 
+          (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 67 || e.keyCode === 88))
+        ) {
+          e.preventDefault();
+          triggerViolation('Illegal keyboard shortcut / inspection attempt.');
+        }
+      });
+
+      // 4. Deteksi Pindah Tab atau Buka App Lain (Khusus saat kuis berjalan)
+      document.addEventListener('visibilitychange', () => {
+        if (isTestRunning && document.hidden) {
+          triggerViolation('Switched tabs or minimized the browser.');
+        }
+      });
+    }
+
+    function submitAssessment(e, isViolation = false) {
+      if (e) e.preventDefault();
+      if (!isTestRunning && !isViolation) return;
+      
+      isTestRunning = false;
       clearInterval(timerInterval);
+      stopCamera();
 
       let totalEarnedScore = 0;
       const maxPossibleScore = 24 * 3;
@@ -622,10 +754,18 @@
       let passed = scorePercentage >= 75;
 
       let profileSummary = "";
-      if (scorePercentage >= 85) profileSummary = "EXCEPTIONAL FIT";
-      else if (scorePercentage >= 75) profileSummary = "COMPETENT / POTENTIAL FIT";
-      else if (scorePercentage >= 60) profileSummary = "BELOW EXPECTATIONS";
-      else profileSummary = "HIGH RISK / UNFIT";
+      if (isViolation) {
+        profileSummary = "DISQUALIFIED (SECURITY VIOLATION)";
+        passed = false;
+      } else if (scorePercentage >= 85) {
+        profileSummary = "EXCEPTIONAL FIT";
+      } else if (scorePercentage >= 75) {
+        profileSummary = "COMPETENT / POTENTIAL FIT";
+      } else if (scorePercentage >= 60) {
+        profileSummary = "BELOW EXPECTATIONS";
+      } else {
+        profileSummary = "HIGH RISK / UNFIT";
+      }
 
       let secondsUsed = 600 - secondsLeft;
       let durationStr = Math.floor(secondsUsed / 60) + "m " + (secondsUsed % 60) + "s";
@@ -639,10 +779,8 @@
       candidateData.profileSummary = profileSummary;
       candidateData.duration = durationStr;
 
-      // 1. Save locally for HR view
       localStorage.setItem('last_candidate_eval', JSON.stringify(candidateData));
 
-      // 2. Transmit silently to Google Sheets
       fetch(SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
@@ -650,14 +788,12 @@
         body: JSON.stringify(candidateData)
       }).catch(err => console.error("Database sync error:", err));
 
-      // 3. Show Thank You Screen
       document.getElementById('quiz-screen').style.display = 'none';
       document.getElementById('timer').style.display = 'none';
       document.getElementById('thankyou-screen').style.display = 'block';
       window.scrollTo(0,0);
     }
 
-    // HR SECURITY PASSCODE CHECK
     function promptHRPasscode() {
       const inputCode = prompt("Enter HR Admin Passcode to view candidate metrics:");
       if (inputCode === HR_PASSCODE) {
@@ -667,7 +803,6 @@
       }
     }
 
-    // HR REPORT & PDF GENERATOR
     function openHRReport() {
       const stored = localStorage.getItem('last_candidate_eval');
       if (!stored) {
@@ -678,14 +813,16 @@
       const evalData = JSON.parse(stored);
       
       let profileDetail = "";
-      if (evalData.percentage >= 85) {
-        profileDetail = "<b>EXCEPTIONAL FIT:</b> Candidate demonstrates elite cognitive acuity, high negotiation agility, and sophisticated grasp of foreigner villa management dynamics in Canggu. Highly capable of handling direct Russian investors with assertive, data-driven leadership.";
+      if (evalData.profileSummary.includes("DISQUALIFIED")) {
+        profileDetail = "<b>DISQUALIFIED:</b> Candidate attempted to bypass security boundaries (copied text, switched tabs/apps, or inspected elements). System automatically terminated assessment.";
+      } else if (evalData.percentage >= 85) {
+        profileDetail = "<b>EXCEPTIONAL FIT:</b> Candidate demonstrates elite cognitive acuity, high negotiation agility, and sophisticated grasp of foreigner villa management dynamics in Canggu.";
       } else if (evalData.percentage >= 75) {
-        profileDetail = "<b>COMPETENT / POTENTIAL FIT:</b> Candidate meets standard corporate thresholds for the hybrid Acquisition role. Solid tactical comprehension with acceptable risk-handling capabilities. Recommended for secondary interview.";
+        profileDetail = "<b>COMPETENT / POTENTIAL FIT:</b> Candidate meets standard corporate thresholds for the hybrid Acquisition role.";
       } else if (evalData.percentage >= 60) {
-        profileDetail = "<b>BELOW EXPECTATIONS:</b> Shows baseline operational awareness but exhibits strategic gaps in high-stakes negotiation, yield analysis, or logical problem solving under time constraints.";
+        profileDetail = "<b>BELOW EXPECTATIONS:</b> Shows baseline operational awareness but exhibits strategic gaps.";
       } else {
-        profileDetail = "<b>HIGH RISK / UNFIT:</b> Significant deficiency in both logical deduction (GMA) and real-world villa management technical protocols. Not recommended for mobile acquisition responsibilities.";
+        profileDetail = "<b>HIGH RISK / UNFIT:</b> Significant deficiency in both logical deduction and real-world villa management technical protocols.";
       }
 
       const reportHtml = `
